@@ -275,16 +275,14 @@ function filterByProvince(province) {
     currentProvinceFilter = province;
     displayMarkers(province);
     
-    // 如果不是"全部"，自动展开侧边栏显示社团列表
-    if (province !== 'all') {
-        const sidebar = document.getElementById('sidebar');
-        const toggleBtn = document.getElementById('toggleSidebar');
-        sidebar.classList.add('active');
-        toggleBtn.classList.add('hidden');
-        
-        // 显示该省份的社团列表
-        showProvinceClubs(province);
-    }
+    // 自动展开侧边栏显示社团列表
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggleSidebar');
+    sidebar.classList.add('active');
+    toggleBtn.classList.add('hidden');
+    
+    // 显示该省份的社团列表
+    showProvinceClubs(province);
 }
 
 // 显示省份社团列表
@@ -292,7 +290,10 @@ function showProvinceClubs(province) {
     const detailsDiv = document.getElementById('clubDetails');
     
     let filteredClubs = [];
-    if (province === '其他') {
+    if (province === 'all') {
+        // "全部"显示所有社团
+        filteredClubs = clubsData;
+    } else if (province === '其他') {
         // "其他"包括国外和没有省份信息的社团
         filteredClubs = clubsData.filter(club => 
             !club.province || !isChineseProvince(club.province)
@@ -306,7 +307,8 @@ function showProvinceClubs(province) {
         return;
     }
     
-    let html = `<h3>${province}的社团 (${filteredClubs.length}个)</h3>`;
+    let provinceTitle = province === 'all' ? '全部' : province;
+    let html = `<h3>${provinceTitle}社团 (${filteredClubs.length}个)</h3>`;
     html += '<div class="province-clubs-list">';
     
     filteredClubs.forEach(club => {
